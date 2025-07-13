@@ -155,6 +155,13 @@ npm install
 - Create a `.env` file in the root directory and fill in the values
 
 4. Start the server:
+
+- For development: Set `NODE_ENV=development` in `.env` and the run the following
+```bash
+npm start
+```
+
+- For production: Set `NODE_ENV=production` in `.env` and the run the following
 ```bash
 $env:DEBUG='ioredis:*'; npm start
 ```
