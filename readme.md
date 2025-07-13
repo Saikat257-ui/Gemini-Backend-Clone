@@ -182,21 +182,24 @@ Expected response:
 
 ### 2. Authentication Flow
 
+- Install the `rest-client` extension in your code editor (e.g., VSCode).
 - Checkout the app.rest.template file for detailed API requests.
 - Create a app.rest file in the root directory and copy the contents from app.rest.template.
-- Or, check out the postman collection link for the authentication flow.
+- Or, check out the postman collection file for the authentication flow.
 
 ### 3. Chatroom Operations
 
+- Install the `rest-client` extension in your code editor (e.g., VSCode).
 - Checkout the app.rest.template file for detailed API requests.
 - Create a app.rest file in the root directory and copy the contents from app.rest.template.
-- Or, check out the postman collection link for the authentication flow.
+- Or, check out the postman collection file for the authentication flow.
 
 ### 4. Subscription Management
 
+- Install the `rest-client` extension in your code editor (e.g., VSCode).
 - Checkout the app.rest.template file for detailed API requests.
 - Create a app.rest file in the root directory and copy the contents from app.rest.template.
-- Or, check out the postman collection link for the authentication flow.
+- Or, check out the postman collection file for the authentication flow.
 
 ## Troubleshooting
 

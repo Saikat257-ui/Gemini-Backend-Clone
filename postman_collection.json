@@ -1,511 +1,351 @@
 {
-  "info": {
-    "name": "Gemini Chat API",
-    "description": "Complete API collection for Gemini-style chat application with OTP authentication, chatroom management, and subscription handling",
-    "version": "1.0.0",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{jwt_token}}",
-        "type": "string"
-      }
-    ]
-  },
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8000",
-      "type": "string"
-    },
-    {
-      "key": "jwt_token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "user_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "chatroom_id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "mobile_number",
-      "value": "+1234567890",
-      "type": "string"
-    }
-  ],
-  "item": [
-    {
-      "name": "Authentication",
-      "item": [
-        {
-          "name": "User Signup",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobile_number\": \"{{mobile_number}}\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/signup",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "signup"]
-            },
-            "description": "Register a new user with mobile number and optional info"
-          },
-          "response": []
-        },
-        {
-          "name": "Send OTP",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobile_number\": \"{{mobile_number}}\",\n  \"purpose\": \"login\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/send-otp",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "send-otp"]
-            },
-            "description": "Send OTP to user's mobile number (mocked, returned in response)"
-          },
-          "response": []
-        },
-        {
-          "name": "Verify OTP",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobile_number\": \"{{mobile_number}}\",\n  \"otp\": \"123456\",\n  \"purpose\": \"login\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/verify-otp",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "verify-otp"]
-            },
-            "description": "Verify OTP and get JWT token for session"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const response = pm.response.json();",
-                  "    pm.collectionVariables.set('jwt_token', response.token);",
-                  "    pm.collectionVariables.set('user_id', response.user.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Forgot Password",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobile_number\": \"{{mobile_number}}\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/forgot-password",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "forgot-password"]
-            },
-            "description": "Send OTP for password reset"
-          },
-          "response": []
-        },
-        {
-          "name": "Change Password",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"current_password\": \"password123\",\n  \"new_password\": \"newpassword456\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/change-password",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "change-password"]
-            },
-            "description": "Change password while logged in"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "User Management",
-      "item": [
-        {
-          "name": "Get User Profile",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/user/me",
-              "host": ["{{base_url}}"],
-              "path": ["user", "me"]
-            },
-            "description": "Get current authenticated user's profile and stats"
-          },
-          "response": []
-        },
-        {
-          "name": "Update User Profile",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"John Smith\",\n  \"email\": \"johnsmith@example.com\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/user/me",
-              "host": ["{{base_url}}"],
-              "path": ["user", "me"]
-            },
-            "description": "Update user profile information"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Chatroom Management",
-      "item": [
-        {
-          "name": "Create Chatroom",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"My New Chatroom\",\n  \"description\": \"A place to discuss various topics\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/chatroom",
-              "host": ["{{base_url}}"],
-              "path": ["chatroom"]
-            },
-            "description": "Create a new chatroom for the authenticated user"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "    const response = pm.response.json();",
-                  "    pm.collectionVariables.set('chatroom_id', response.chatroom.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "List Chatrooms (Cached)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/chatroom",
-              "host": ["{{base_url}}"],
-              "path": ["chatroom"]
-            },
-            "description": "Get all chatrooms for the user (uses Redis caching with 5-10 minute TTL)"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Chatroom Details",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/chatroom/{{chatroom_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["chatroom", "{{chatroom_id}}"]
-            },
-            "description": "Get detailed information about a specific chatroom including recent messages"
-          },
-          "response": []
-        },
-        {
-          "name": "Send Message to Chatroom",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"content\": \"Hello! Can you help me with a programming question?\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/chatroom/{{chatroom_id}}/message",
-              "host": ["{{base_url}}"],
-              "path": ["chatroom", "{{chatroom_id}}", "message"]
-            },
-            "description": "Send a message and receive Gemini AI response (async via queue)"
-          },
-          "response": []
-        },
-        {
-          "name": "Update Chatroom",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Updated Chatroom Title\",\n  \"description\": \"Updated description\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/chatroom/{{chatroom_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["chatroom", "{{chatroom_id}}"]
-            },
-            "description": "Update chatroom title and description"
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Chatroom",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/chatroom/{{chatroom_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["chatroom", "{{chatroom_id}}"]
-            },
-            "description": "Delete a chatroom and all its messages"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Subscription Management",
-      "item": [
-        {
-          "name": "Start Pro Subscription",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": ""
-            },
-            "url": {
-              "raw": "{{base_url}}/subscribe/pro",
-              "host": ["{{base_url}}"],
-              "path": ["subscribe", "pro"]
-            },
-            "description": "Initiate Pro subscription via Stripe Checkout"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Subscription Status",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/subscription/status",
-              "host": ["{{base_url}}"],
-              "path": ["subscription", "status"]
-            },
-            "description": "Check user's current subscription tier and usage information"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Subscription History",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwt_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/subscription/history",
-              "host": ["{{base_url}}"],
-              "path": ["subscription", "history"]
-            },
-            "description": "Get user's subscription history"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Webhook",
-      "item": [
-        {
-          "name": "Stripe Webhook (Internal)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "stripe-signature",
-                "value": "webhook_signature_here"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"type\": \"customer.subscription.created\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"sub_1234567890\",\n      \"customer\": \"cus_1234567890\",\n      \"status\": \"active\"\n    }\n  }\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/webhook/stripe",
-              "host": ["{{base_url}}"],
-              "path": ["webhook", "stripe"]
-            },
-            "description": "Internal webhook endpoint for Stripe events (payment success/failure, subscription changes)"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Health Check",
-      "item": [
-        {
-          "name": "Health Check",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/health",
-              "host": ["{{base_url}}"],
-              "path": ["health"]
-            },
-            "description": "Check if the API is running and healthy"
-          },
-          "response": []
-        }
-      ]
-    }
-  ]
+	"info": {
+		"_postman_id": "00d3f53a-8296-47cc-9bcc-376a71d1d38c",
+		"name": "POSTMAN COLLECTION FILE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45630331",
+		"_collection_link": "https://saikats-org.postman.co/workspace/deepseek~3effac04-7482-4d62-9441-68edb18c8543/collection/45630331-00d3f53a-8296-47cc-9bcc-376a71d1d38c?action=share&source=collection_link&creator=45630331"
+	},
+	"item": [
+		{
+			"name": "AUTHENTICATION",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobile_number\": \"1234567890\",\r\n  \"name\": \"Example User\",\r\n  \"email\": \"example@example.com\",\r\n  \"password\": \"YourPassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobile_number\": \"1234567890\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/auth/send-otp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"send-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobile_number\": \"1234567890\",\r\n  \"otp\": \"123456\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/auth/verify-otp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"verify-otp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "USER",
+			"item": [
+				{
+					"name": "Current User Details",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{YOUR_JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:{{port}}/user/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{YOUR_JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Example Name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/user/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CHATROOM",
+			"item": [
+				{
+					"name": "Create chatroom",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{YOUR_JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Example Chatroom\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/chatroom",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"chatroom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List chatrooms",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{YOUR_JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/chatroom",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"chatroom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{YOUR_JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"content\": \"Example message\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/chatroom/:chatroomId/message",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"chatroom",
+								":chatroomId",
+								"message"
+							],
+							"variable": [
+								{
+									"key": "chatroomId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SUBCRIPTION",
+			"item": [
+				{
+					"name": "Create subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{YOUR_JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:{{port}}/subscription/pro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"subscription",
+								"pro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Subscription Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{YOUR_JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:{{port}}/subscription/status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"subscription",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
 }
