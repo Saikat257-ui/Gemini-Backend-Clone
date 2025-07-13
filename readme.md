@@ -184,16 +184,19 @@ Expected response:
 
 - Checkout the app.rest.template file for detailed API requests.
 - Create a app.rest file in the root directory and copy the contents from app.rest.template.
+- Or, check out the postman collection link for the authentication flow.
 
 ### 3. Chatroom Operations
 
 - Checkout the app.rest.template file for detailed API requests.
 - Create a app.rest file in the root directory and copy the contents from app.rest.template.
+- Or, check out the postman collection link for the authentication flow.
 
 ### 4. Subscription Management
 
 - Checkout the app.rest.template file for detailed API requests.
 - Create a app.rest file in the root directory and copy the contents from app.rest.template.
+- Or, check out the postman collection link for the authentication flow.
 
 ## Troubleshooting
 

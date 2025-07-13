@@ -66,7 +66,7 @@ Content-Type: application/json
 
 # --- SUBSCRIPTION ---
 ### Create subscription
-POST http://localhost:{{port}}/subscription/create
+POST http://localhost:{{port}}/subscription/pro
 Authorization: Bearer YOUR_JWT_TOKEN
 Content-Type: application/json
 
