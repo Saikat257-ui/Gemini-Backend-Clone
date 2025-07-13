@@ -1,11 +1,10 @@
 {
 	"info": {
-		"_postman_id": "00d3f53a-8296-47cc-9bcc-376a71d1d38c",
-		"name": "POSTMAN COLLECTION FILE",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45630331",
-		"_collection_link": "https://saikats-org.postman.co/workspace/deepseek~3effac04-7482-4d62-9441-68edb18c8543/collection/45630331-00d3f53a-8296-47cc-9bcc-376a71d1d38c?action=share&source=collection_link&creator=45630331"
-	},
+    "name": "Gemini Chat API",
+    "description": "Complete API collection for Gemini-style chat application with OTP authentication, chatroom management, and subscription handling",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
 	"item": [
 		{
 			"name": "AUTHENTICATION",
