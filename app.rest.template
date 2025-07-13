@@ -1,0 +1,79 @@
+# --- AUTH ---
+### Signup (Register User)
+POST http://localhost:{{port}}/auth/signup
+Content-Type: application/json
+
+{
+  "mobile_number": "1234567890",
+  "name": "Example User",
+  "email": "example@example.com",
+  "password": "YourPassword123"
+}
+
+### Send OTP
+POST http://localhost:{{port}}/auth/send-otp
+Content-Type: application/json
+
+{
+  "mobile_number": "1234567890"
+}
+
+### Verify OTP
+POST http://localhost:{{port}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "mobile_number": "1234567890",
+  "otp": "123456"  
+}
+
+# --- USER ---
+### Get current user details
+GET http://localhost:{{port}}/user/me
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Update user profile
+PUT http://localhost:{{port}}/user/me
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Example Name"
+}
+
+# --- CHATROOM ---
+### Create chatroom
+POST http://localhost:{{port}}/chatroom
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "title": "Example Chatroom"
+}
+
+### List chatrooms
+GET http://localhost:{{port}}/chatroom
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Send message
+POST http://localhost:{{port}}/chatroom/:chatroomId/message
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "content": "Example message"
+}
+
+# --- SUBSCRIPTION ---
+### Create subscription
+POST http://localhost:{{port}}/subscription/create
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "priceId": "YOUR_STRIPE_PRICE_ID"
+}
+
+### Check subscription status
+GET http://localhost:{{port}}/subscription/status
+Authorization: Bearer YOUR_JWT_TOKEN
