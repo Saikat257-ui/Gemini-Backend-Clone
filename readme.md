@@ -151,7 +151,7 @@ npm install
 
 3. Set up environment variables in `.env`:
 
-- Check `.env.example` for required variables
+- Check `.env.example` as a reference for required variables
 - Create a `.env` file in the root directory and fill in the values
 
 4. Start the server:
