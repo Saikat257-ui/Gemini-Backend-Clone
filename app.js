@@ -49,30 +49,77 @@ process.on('unhandledRejection', (reason, promise) => {
 async function startServer() {
   try {
     console.log('Starting server initialization...');
+    logger.info('Environment:', process.env.NODE_ENV);
 
     // Initialize Database first
     console.log('Initializing Database...');
     await initializeDatabase();
     console.log('Database initialized successfully');
     
-    // Initialize Redis next
+    // Initialize Redis next with retry logic
     console.log('Initializing Redis...');
-    await initializeRedis();
-    console.log('Redis initialized successfully');
+    let redisRetries = 0;
+    const maxRedisRetries = 5;
+    
+    while (redisRetries < maxRedisRetries) {
+      try {
+        await initializeRedis();
+        console.log('Redis initialized successfully');
+        break;
+      } catch (error) {
+        redisRetries++;
+        console.log(`Redis connection attempt ${redisRetries} failed:`, error.message);
+        if (redisRetries === maxRedisRetries) {
+          throw new Error('Failed to connect to Redis after multiple attempts');
+        }
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
 
-    // Initialize BullMQ queue
+    // Initialize BullMQ queue with retry logic
     console.log('Initializing Queue...');
-    await initializeGeminiQueue();
-    console.log('Queue initialized successfully');
+    let queueRetries = 0;
+    const maxQueueRetries = 5;
+
+    while (queueRetries < maxQueueRetries) {
+      try {
+        await initializeGeminiQueue();
+        console.log('Queue initialized successfully');
+        break;
+      } catch (error) {
+        queueRetries++;
+        console.log(`Queue initialization attempt ${queueRetries} failed:`, error.message);
+        if (queueRetries === maxQueueRetries) {
+          throw new Error('Failed to initialize queue after multiple attempts');
+        }
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
 
     // Start the server
     const port = process.env.PORT || 5000;
-    app.listen(port, () => {
+    const server = app.listen(port, '0.0.0.0', () => {
       console.log('=================================');
       console.log(`🚀 Server is running on port ${port}`);
       console.log('=================================');
+      logger.info(`Server started successfully on port ${port}`);
     });
+
+    // Add error handler for the server
+    server.on('error', (error) => {
+      logger.error('Server error:', error);
+      if (error.code === 'EADDRINUSE') {
+        logger.error(`Port ${port} is already in use`);
+      }
+    });
+
   } catch (error) {
+    logger.error('Failed to start server:', {
+      error: error.message,
+      stack: error.stack
+    });
     console.error('Failed to start server:', error);
     process.exit(1);
   }
