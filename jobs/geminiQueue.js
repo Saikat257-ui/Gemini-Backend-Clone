@@ -33,13 +33,10 @@ async function initializeGeminiQueue() {
       host: process.env.REDIS_HOST,
       port: parseInt(process.env.REDIS_PORT),
       password: process.env.REDIS_PASSWORD,
-      maxRetriesPerRequest: 3,
-      enableReadyCheck: false,
-      disconnectTimeout: 5000,
-      keepAlive: 5000,
-      retryStrategy: (times) => {
-        return Math.min(times * 100, 3000);
-      }
+      maxRetriesPerRequest: null,  // Required by BullMQ
+      enableReadyCheck: true,
+      lazyConnect: true,
+      disconnectTimeout: 2000
     };
 
     // Initialize queue with optimized settings

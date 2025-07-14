@@ -145,10 +145,14 @@ app.get('/health', (req, res) => {
 // Error handling middleware
 app.use(errorHandler);
 
-// 404 handler
+// // 404 handler
 // app.use('*', (req, res) => {
-//   res.status(404).json({ error: 'Route not found' });
+//   res.status(404).json({ 
+//     error: 'Route not found',
+//     path: req.originalUrl
+//   });
 // });
 
-// Export the app
+// Export the configured Express app
+// Server initialization and startup is handled in app.js
 module.exports = app;

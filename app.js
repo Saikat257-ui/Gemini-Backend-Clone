@@ -48,25 +48,32 @@ process.on('unhandledRejection', (reason, promise) => {
 // Initialize services
 async function startServer() {
   try {
+    console.log('Starting server initialization...');
+
     // Initialize Database first
+    console.log('Initializing Database...');
     await initializeDatabase();
-    logger.info('Database initialized successfully');
+    console.log('Database initialized successfully');
     
     // Initialize Redis next
+    console.log('Initializing Redis...');
     await initializeRedis();
-    logger.info('Redis initialized successfully');
+    console.log('Redis initialized successfully');
 
     // Initialize BullMQ queue
+    console.log('Initializing Queue...');
     await initializeGeminiQueue();
-    logger.info('Gemini queue initialized successfully');
+    console.log('Queue initialized successfully');
 
     // Start the server
     const port = process.env.PORT || 5000;
     app.listen(port, () => {
-      logger.info(`Server running on port ${port}`);
+      console.log('=================================');
+      console.log(`🚀 Server is running on port ${port}`);
+      console.log('=================================');
     });
   } catch (error) {
-    logger.error('Failed to start server:', error);
+    console.error('Failed to start server:', error);
     process.exit(1);
   }
 }
